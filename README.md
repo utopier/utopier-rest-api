@@ -11,6 +11,7 @@
 3. CICD
 
 - circleCI
+- test
 
 4. Deploy
 
