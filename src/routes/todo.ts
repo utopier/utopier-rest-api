@@ -3,7 +3,7 @@ const router = express.Router();
 import {isLoggedIn} from '../middlewares'
 
 import Todo from '../entities/Todo'
-
+import User from '../entities/User'
 /**
  * @swagger
  * tags:
@@ -48,11 +48,15 @@ import Todo from '../entities/Todo'
  *             newTodo:
  *               $ref: '#/definitions/Todo'
  */
-router.post('/', isLoggedIn, async(req, res, next) => {
+router.post('/', isLoggedIn, async(req:any, res, next) => {
     try {
         const fullTodo = await Todo.insert({
           text:req.body.text,
         })
+        await User.createQueryBuilder()
+          .relation(User, 'todos')
+          .of(req.user.id)
+          .add(fullTodo.identifiers[0].id)
         res.status(201).json(fullTodo);
       } catch (error) {
         console.error(error);
@@ -83,12 +87,20 @@ router.post('/', isLoggedIn, async(req, res, next) => {
  *               items:
  *                 $ref: '#/definitions/Todo'
  */
-router.patch('/', isLoggedIn, async(req, res, next) => {
+router.patch('/:todoId', isLoggedIn, async(req:any, res, next) => {
   try {
-      //await Todo.update({
-        
-      //});
-      res.status(200).json({ TodoId: parseInt(req.params.todoId, 10) });
+      await Todo.update(
+        {id: req.params.todoId},
+        {
+          text: req.body.text,
+          done: req.body.done
+        }
+      );
+      res.status(200).json({ 
+        id: req.params.todoId,
+        text: req.body.text,
+        done: req.body.done,
+      });
     } catch (error) {
       console.error(error);
       next(error);
@@ -118,12 +130,20 @@ router.patch('/', isLoggedIn, async(req, res, next) => {
  *               items:
  *                 $ref: '#/definitions/Todo'
  */
-router.delete('/', isLoggedIn, async(req, res, next) => {
+router.delete('/:todoId', isLoggedIn, async(req:any, res:any, next) => {
     try {
-        //await Todo.delete({
-        
-        //});
-        res.status(200).json({ TodoId: parseInt(req.params.todoId, 10) });
+      const todo = await Todo.findOne({
+        where: { id: req.params.todoId, user: { id: req.user.id } },
+      });
+      if (!todo) {
+        return res.status(403).send('Todo가 존재하지 않습니다.');
+      }
+      await Todo.createQueryBuilder()
+        .relation(Todo, 'user')
+        .of(todo.id)
+        .set(null);
+      await Todo.delete({ id: todo.id });
+        res.status(200).json({ TodoId: req.params.todoId });
       } catch (error) {
         console.error(error);
         next(error);

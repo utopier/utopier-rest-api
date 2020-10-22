@@ -13,12 +13,24 @@ import cors from 'cors'
 import passport from 'passport'
 import passportConfig from './passport';
 import { createConnection } from 'typeorm';
+import connectRedis from 'connect-redis'
+const RedisStore = connectRedis(session);
+import redis from 'redis'
 import dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/../.env' });
 
 passportConfig();
 
 const connectionOptions = require('./ormconfig');
+
+export const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD,
+  logError: true,
+});
+
+
 createConnection(connectionOptions)
   .then(() => {
     console.log('MySQL 연결 성공');
@@ -76,10 +88,12 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   secret: process.env.COOKIE_SECRET,
+  name:"sessionId",
+  store: new RedisStore({client: redisClient}),
   cookie: {
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.nodebird.com'
+    // domain: process.env.NODE_ENV === 'production' && '.nodebird.com'
   },
 }));
 app.use(passport.initialize());

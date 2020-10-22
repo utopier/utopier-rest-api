@@ -1,6 +1,8 @@
 import express from 'express'
 const router = express.Router();
 import Todo from '../entities/Todo'
+import {isLoggedIn} from '../middlewares'
+
 //import User from '../entities/User'
 
 /**
@@ -27,10 +29,11 @@ import Todo from '../entities/Todo'
  *               items:
  *                 $ref: '#/definitions/Todo'
  */
-router.get('/', async(req, res, next) => {
-    try {
+router.get('/', isLoggedIn, async(req:any, res, next) => {
+  console.log(req.user.id)
+  try {
         const todos = await Todo.find({
-        
+          where:{user:{id:req.user.id}}
         });
         res.status(200).json(todos);
       } catch (error) {
