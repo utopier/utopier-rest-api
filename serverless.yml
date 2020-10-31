@@ -1,0 +1,47 @@
+service:
+  name: utopier-todoapp-api
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  tracing:
+    apiGateway: true
+  runtime: nodej12.x
+  memorySize: 256
+  stage: ${opt: stage, 'dev'}
+  region: us-east-1
+  environment:
+    tableName: todoapp
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+package:
+  individually: true
+
+resources:
+  Resources:
+    OrderTable: ${file(resources/Orderstable.yml):OrdersTable}
+
+functions:
+  create:
+    handler: create.main
+    events:
+      - http:
+          path: todos
+          method: post
+          cors: true
+          
