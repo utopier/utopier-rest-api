@@ -71,26 +71,145 @@
 ## Backend Workflow
 
 1. github, jira, slack, confluence
+
    - [O]github
-   - []github + jira
-   - []github + slack
-   - []jira + slack
+     - github remote -v
+   - [O]github + jira
+     - git add
+     - git commit -m '[UTOPIER-9] smart commit test'
+     - git push
+   - [O]github + slack
+     - Slack Apps에 Github 추가
+   - [O]jira + slack
+     - Slack Apps에 Jira 추가
+     - Apps에서 Isuue에 Comment
+   - [O]git-flow policy
+     - 모든 작업전 Jira Issue 발행 및 작업 후 SmartCommit 활용
+     - master, develop, feature, release, hotfix
+     - feature 브랜치에서 기능 개발 후 develop 브랜치로 merge
+     - release 전에 준비된 develop 버전 release 브랜치로 merge후 QA Test완료시 master(배포), develop으로 다시 병합
+     - master(배포)버전에서 이슈발생시 hotfix 브랜치에서 수정후 master, develop 브랜치로 merge
+
 2. Nodejs + Express(+ Middlewares) + Ts + Linting + Swagger UI
-   - []nodejs + express(+middlewares)
-   - []typesscript
-   - []linting
-   - []swagger-ui
+
+   - [O]Nodejs + Express(+middlewares)
+     - node -v : 공식홈피의 LTS 버전 사용하면 됨
+     - npm -v
+     - npm init -y
+     - package.json 기본 속성 추가
+     - npm i express
+     - npm i -D nodemon
+     - npm i cookie-parser express-session cors morgan passport passport-local bcrypt
+     - npm i hpp helmet
+     - npm i dotenv cross-env
+     - npm i swagger-ui-express swagger-jsdoc
+     - mkdir src
+     - mkdir routes
+     - mkdir entities
+     - mkdir passport
+     - touch .env
+     - touch .gitignore
+     - cd src
+     - touch index.js
+       - middleware 연결 및 swagger는 /api-docs에 라우팅
+     - cd ..
+     - package.json dev scripts에 nodemon으로 실행
+     - npm run dev
+     - localhost:PORT 접속
+     - localhost:PORT/api-docs 접속
+   - [O]Typesscript
+     - npm i -D typescript
+     - typescript 지원하지않는 dependency들은 @types/ 패키지 devDependencies에 설치
+     - npx tsc --init
+     - tsconfig.json에 compilerOptions, include, exclude 속성정의
+     - npm i ts-node
+     - package.json scripts dev에 ts-node 추가
+     - .js -> .ts
+   - []Linting
+     - npm i -D eslint eslint-config-airbnb-typescript eslint-plugin-import @typescript-eslint/eslint-plugin
+     - touch .eslintrc
+       ```json
+       {
+        "extends": ["airbnb-typescript"],
+        "parserOptions": {
+        "project": "./tsconfig.json",
+         }
+       };
+       ```
+     - package.json scripts eslint는 npx eslint . --ext .js,.jsx,.ts,.tsx
+     - npm install -D prettier eslint-config-prettier eslint-plugin-prettier
+     - touch .prettierrc
+     - package.json
+       ```json
+       {
+         //...
+         "scripts": {
+           "prettier": "prettier --write --config ./.prettierrc \"**/*.{ts,tsx}\"",
+           "lint": "eslint './src/**/*.{ts,tsx}'",
+           "lint:fix": "eslint --fix './src/**/*.{ts,tsx}'"
+         }
+         //...
+       }
+       ```
+     - .eslintrc
+       ```json
+       {
+         "extends": [
+           "prettier",
+           "airbnb-typescript",
+           "prettier/@typescript-eslint",
+           "plugin:prettier/recommended"
+         ]
+         //...
+       }
+       ```
+     - npm run prettier -> npm run eslint
+     - VSC에서 파일저장시 코드 자동 수정
+       - Extension 설치
+       - Javascript -> Format: Enable 해제
+       - Editor : Format On Save 체크
+       - ESLint : Auto Fix On Save 체크
+     - .vscode/settings.json
+       ```json
+       {
+         // Set the default
+         "editor.formatOnSave": false,
+         // Enable per-language
+         "[javascript]": {
+           "editor.formatOnSave": true
+         },
+         "editor.codeActionsOnSave": {
+           // For ESLint
+           "source.fixAll.eslint": true
+         }
+       }
+       ```
+   - [O]Swagger-ui
+     - Swagger Hub 활용
+
 3. DB Modeling
-   - []DB Diagram
+
+   - [O]DB Diagram(ERD)
+     - sqldbm.com
+
 4. ORM + Database
-   - []Local Database
-   - []ORM
+
+   - [O]Local Database Setting
+     - MySQL
+     - Redis
+   - [O]ORM
+   - /src/ormConfig.ts
+
 5. API Development with Postman, Swagger Doc, Lambda Function
+
    - Swagger -> Coding -> Postman -> DB & SQL Check-> Lambda Function -> Lambda Local Test
+
 6. CICD Pipeline
-   - []CircleCI Pipeline
-   - []CircleCI + Github
+
+   - [O]CircleCI Pipeline
+   - [O]CircleCI + Github
    - []CircleCI + Slack
+
 7. Serverless + AWS
    - []Serverless framework + AWS
 

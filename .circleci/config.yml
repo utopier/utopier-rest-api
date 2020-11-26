@@ -1,7 +1,43 @@
-version: 2.1
-orbs:
-  node: circleci/node@3.0.0
+# circleci 버전
+version: 2
+# 작업 목록
+jobs:
+  # 작업 이름
+  build:
+    # docker 가상화 이미지 설정
+    docker:
+      - image: circleci/node:12
+    # 배포시 사용할 스크립트
+    steps:
+      # 소스를 checkout해 리눅스 머신에 소스 적용
+      - checkout
+      # cache 복원, 작업 실행전 다른 job에서 save_cache로 캐시된 거 사용
+      - restore_cache:
+          name: Restore NPM Package Cache
+          keys:
+            - dep-bundle-{{ checksum "package.json" }}
+      - run:
+          name: 패키지 다운로드
+          command: npm install
+      # cache 저장, 캐싱으로 저장된 내용은 다른 job에서도 사용됨
+      # dependency 라이브러리가 저장되는 node_modules폴더를 캐싱해두기
+      - save_cache:
+          name: Save NPM Pacakge Cache
+          key: dep-bundle-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+#      - run:
+#          name: aws serverless deploy
+#          command: serverless depoly
 workflows:
-  node-tests:
+  version: 2
+  build:
     jobs:
-      - node/test
+      # 위에서 작성한 job 명칭
+      - build
+      #- build:
+      # filters, 현재 job이 실행되기 위한 조건, ex: github 특정 브랜치만 실행할 수 있도록 제한
+      #filters:
+      #  branches:
+      #    only: master
+      # requires, 현재 job을 수행하기 이전에 선행되어야할 작업 목록
