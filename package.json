@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "cd src && nodemon --exec ts-node index.ts -e ts"
+    "dev": "cd src && nodemon --exec ts-node index.ts -e ts",
+    "test": "serverless-bundle test"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +21,14 @@
     "@types/passport-local": "^1.0.33",
     "@types/swagger-jsdoc": "^3.0.2",
     "@types/swagger-ui-express": "^4.1.2",
+    "aws-sdk": "^2.799.0",
     "nodemon": "^2.0.5",
+    "serverless-bundle": "^4.1.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-offline": "^6.8.0",
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "aws-sdk": "^2.776.0",
     "bcrypt": "^5.0.0",
     "connect-redis": "^5.0.0",
     "cookie-parser": "^1.4.5",

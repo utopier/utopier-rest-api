@@ -59,12 +59,16 @@
 - CodeStyle, JsDoc, Rxjs, Google Analytics, Refactoring, CodingSkill, CleanArchitecture, CleanCode, DesignPattern, OOP, Functional
 
 3. **Devops**
+
    - **VCS(Virsion Contol System)** : git, sourcetree
    - **Branch Management** : git-flow
    - **Issue Tracker(with Smart Commit)** : Jira
    - **Wiki software** : Confluence
    - **Collaboration software** : Slack
    - **Software Process** : Agile(Scrum, Kanban)
+
+4. **ReactNative**
+5. **Electron**
 
 ---
 
@@ -207,11 +211,64 @@
 6. CICD Pipeline
 
    - [O]CircleCI Pipeline
+     - .circleci/config.yml
    - [O]CircleCI + Github
-   - []CircleCI + Slack
 
-7. Serverless + AWS
-   - []Serverless framework + AWS
+7. Serverless + SST + AWS
+
+- [O]AWS Account(IAM User 생성 및 AWS CLI Profile 구성)
+  - AWS Console -> IAM User 생성(Access Key ID, Secret Access Key 메모)
+  - npm i -g aws-cli
+  - aws configure
+- [O]Basic Serverless App Setting
+
+  - install -> serverless.yml -> serverless deploy (hello world)
+  - npm install serverless -g
+  - npm i -D serverless-bundle serverless-dotenv-plugin serverless-offline
+  - touch serverless.yml
+
+    ```yml
+    service: notes-api
+
+    # Create an optimized package for our functions
+    package:
+      individually: true
+
+    plugins:
+      - serverless-bundle # Package our functions with Webpack
+      - serverless-offline
+      - serverless-dotenv-plugin # Load .env as environment variables
+
+    provider:
+      name: aws
+      runtime: nodejs12.x
+      stage: prod
+      region: us-east-1
+
+    functions:
+      hello:
+        handler: handler.hello
+        events:
+          - http:
+              path: hello
+              method: get
+    ```
+
+  - package.json scripts test 수정
+  - npm i -D aws-sdk
+  - touch handler.js
+  - serverless invoke local --function hello
+  - serverless deploy
+    - AWS Console 확인 : CloudFormation, S3, API Gateway, Lambda
+
+- []SST(RDS,ElasticCache,S3)
+  - Stack 생성 -> Stack 추가 -> Stack 배포 -> 단위테스트
+  - serverless.yml stage dev로 수정
+  - npx create-serverless-stack resources infrastructure
+- []API->Endpoint->Test->Refactoring
+- []CORS 처리(API Gateway, Lambda, S3)
+- []Serverless Deployment(SST CDK App, Serverless API)
+- []Monitoring(CloudWath(Lambda, API Gateway))
 
 ---
 
@@ -299,9 +356,22 @@
 - []CircleCI + Github
 - []CircleCI + Slack
 
-15. Deployment
+15. Deployment(Amplify,Netlify or CircleCI, Route53, freenom, Sentry)
 
-- []serverless + aws
+- []AWS Amplify 구성
+  - 설치, 구성
+  - AWS Amplify 추가
+- []S3에 파일 업로드
+- []도메인 및 호스팅
+  - Netlify 프로젝트 설정
+  - Route 53으로 도메인 구매
+  - Netlify 사용자 지정 도메인
+- []배포자동화(circleCI)
+  - 환경 관리
+  - Netlify 빌드 스크립트 추가
+- []모니터링
+  - Sentry
+  - React Error Boundary
 
 16. Performance
 
@@ -335,3 +405,13 @@
 - []HTTPS
 - []CSP
 - []Mixed Content
+
+---
+
+## ReactNative Workflow
+
+---
+
+## Electron Workflow
+
+---
