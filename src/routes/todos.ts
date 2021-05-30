@@ -22,12 +22,8 @@ import {isLoggedIn} from '../middlewares'
  *       200:
  *         description: todo list
  *         schema:
- *           type: object
- *           properties:
- *             todos:
- *               type: array
- *               items:
- *                 $ref: '#/definitions/Todo'
+ *           type: arry
+ *           $ref: '#/definitions/Todo'
  */
 router.get('/', isLoggedIn, async(req:any, res, next) => {
   console.log(req.user.id)

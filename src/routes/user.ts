@@ -37,6 +37,17 @@ import bcrypt from 'bcrypt'
  *       password:
  *         type: string
  *         description: 비밀번호
+ *   ResponseUser:
+ *     type: object
+ *     required:
+ *       - username
+ *     properties:
+ *       id: 
+ *         type: string
+ *         description: ObjectID
+ *       username:
+ *         type: string
+ *         description: 유저 이름
  */
 
 
@@ -58,14 +69,10 @@ import bcrypt from 'bcrypt'
  *         schema:
  *           $ref: '#/definitions/NewUser'
  *     responses:
- *       200:
- *         description: New User
+ *       '200':
+ *         description: Response User
  *         schema:
- *           type: object
- *           properties:
- *               type: object
- *               user:
- *                 $ref: '#/definitions/User'
+ *           $ref: '#/definitions/ResponseUser'  
  */
 router.post('/', isNotLoggedIn, async(req: any, res:any, next:NextFunction) => {
   try {
@@ -104,15 +111,10 @@ router.post('/', isNotLoggedIn, async(req: any, res:any, next:NextFunction) => {
  *         schema:
  *           $ref: '#/definitions/NewUser'
  *     responses:
- *       200:
- *         description: Return token
+ *       '200':
+ *         description: Response User
  *         schema:
- *           type: object
- *           properties:
- *             user:
- *               type: object
- *               items:
- *                 $ref: '#/definitions/User'
+ *           $ref: '#/definitions/ResponseUser'  
  */
 router.post('/login', isNotLoggedIn, async(req:any,res,next) => {
     passport.authenticate('local', (err, user, info) => {
@@ -128,8 +130,9 @@ router.post('/login', isNotLoggedIn, async(req:any,res,next) => {
             console.error(loginErr);
             return next(loginErr);
           }
-          const fullUserWithoutPassword = await User.findOne({
-            where:{userName: req.body.userName}
+          const fullUserWithoutPassword = await User.find({
+            select: ["id","userName"],
+            where:{userName: req.body.userName},
           })
           return res.status(200).json(fullUserWithoutPassword);
         });
@@ -144,14 +147,7 @@ router.post('/login', isNotLoggedIn, async(req:any,res,next) => {
  *     tags: [User]
  *     responses:
  *       200:
- *         description: New User
- *         schema:
- *           type: object
- *           properties:
- *             user:
- *               type: object
- *               items:
- *                 $ref: '#/definitions/User'
+ *         description: OK
  */
 router.post('/logout', isLoggedIn, (req:any, res) => {
     req.logout();

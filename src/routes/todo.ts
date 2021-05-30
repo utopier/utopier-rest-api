@@ -24,6 +24,12 @@ import User from '../entities/User'
  *       done:
  *         type: boolean
  *         description: 완료 여부
+ *       createdAt:
+ *         type: string
+ *         description: 생성 시간
+ *       updatedAt:
+ *         type: string
+ *         description: 업데이트 시간
  */
 
 /**
@@ -35,18 +41,18 @@ import User from '../entities/User'
  *     parameters:
  *       - name: text
  *         description: New Todo Text
- *         in:  body
- *         required: true
+ *         in: body
  *         type: string
+ *         schema:
+ *           type: object
+ *           properties:
+ *             text:
+ *               type: string
  *     responses:
  *       200:
  *         description: Return New Todo
  *         schema:
- *           type: object
- *           properties:
- *             type: object
- *             newTodo:
- *               $ref: '#/definitions/Todo'
+ *           $ref: '#/definitions/Todo'
  */
 router.post('/', isLoggedIn, async(req:any, res, next) => {
     try {
@@ -57,7 +63,7 @@ router.post('/', isLoggedIn, async(req:any, res, next) => {
           .relation(User, 'todos')
           .of(req.user.id)
           .add(fullTodo.identifiers[0].id)
-        res.status(201).json(fullTodo);
+        res.status(201).json({...fullTodo.generatedMaps[0],"text":req.body.text});
       } catch (error) {
         console.error(error);
         next(error);
@@ -73,19 +79,20 @@ router.post('/', isLoggedIn, async(req:any, res, next) => {
  *     parameters:
  *       - name: text
  *         description: update todo text
- *         in:  body
- *         required: true
+ *         in: body
  *         type: string
+ *         schema:
+ *           type: object
+ *           properties:
+ *             text:
+ *               type: string
+ *             done:
+ *               type: boolean
  *     responses:
  *       200:
  *         description: patch Todo success
  *         schema:
- *           type: object
- *           properties:
- *             todos:
- *               type: object
- *               items:
- *                 $ref: '#/definitions/Todo'
+ *           $ref: '#/definitions/Todo'
  */
 router.patch('/:todoId', isLoggedIn, async(req:any, res, next) => {
   try {
@@ -109,26 +116,25 @@ router.patch('/:todoId', isLoggedIn, async(req:any, res, next) => {
 
 /**
  * @swagger
- * /todo:
+ * /todo/{todoId}:
  *   delete:
  *     summary: Delte Todo
  *     tags: [Todo]
  *     parameters:
- *       - name: id
- *         description: delete todo id
- *         in:  query
+ *       - in:  path
+ *         name: todoId
+ *         description: The todo id
  *         required: true
- *         type: string
+ *         type: integer
  *     responses:
  *       200:
  *         description: delete Todo success
  *         schema:
  *           type: object
  *           properties:
- *             todos:
- *               type: object
- *               items:
- *                 $ref: '#/definitions/Todo'
+ *             id:
+ *               type: integer
+ *               description: The todo id
  */
 router.delete('/:todoId', isLoggedIn, async(req:any, res:any, next) => {
     try {

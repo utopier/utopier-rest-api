@@ -72,6 +72,18 @@
 
 ---
 
+## Backend Features (with Swagger, Postman, MySQL Workbench, redis-cli)
+
+- [O]signup
+- [O]login
+- [O]logout
+- [O]getTodos
+- [O]createTodo
+- [O]updateTodo
+- [O]deleteTodo
+
+---
+
 ## Backend Workflow
 
 1. github, jira, slack, confluence
@@ -261,10 +273,21 @@
   - serverless deploy
     - AWS Console 확인 : CloudFormation, S3, API Gateway, Lambda
 
-- []SST(RDS,ElasticCache,S3)
+- []SST(RDS,ElastiCache,S3,Cognito)
   - Stack 생성 -> Stack 추가 -> Stack 배포 -> 단위테스트
   - serverless.yml stage dev로 수정
   - npx create-serverless-stack resources infrastructure
+  - cd infrastructure
+  - npx sst build
+  - infrastructure/sst.json 수정
+  - https://docs.aws.amazon.com/cdk/api/latest/docs/aws-rds-readme.html
+  - https://openbase.io/categories/js/best-javascript-libraries
+  1. RDS
+  - VPC 보안 그룹에서 해당 RDS 인스턴스의 인바운드 규칙 편집 ->소스에 내 IP 주소 추가
+  - cmd -> mysql -u MASTERUSER --host 엔드포인트 -P DBPORT -p
+  2. ElastiCache
+  3. S3
+  4. Cognito
 - []API->Endpoint->Test->Refactoring
 - []CORS 처리(API Gateway, Lambda, S3)
 - []Serverless Deployment(SST CDK App, Serverless API)

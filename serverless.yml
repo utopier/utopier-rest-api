@@ -18,7 +18,7 @@ provider:
   #   apiGateway: true
   runtime: nodejs12.x
   # memorySize: 256
-  stage: prod
+  stage: dev
   region: ap-northeast-2
   # environment:
   #   tableName: todoapp
