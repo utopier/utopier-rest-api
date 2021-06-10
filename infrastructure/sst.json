@@ -1,6 +1,0 @@
-{
-  "name": "utopier-todoapp-api",
-  "type": "@serverless-stack/resources",
-  "stage": "dev",
-  "region": "ap-northeast-2"
-}
